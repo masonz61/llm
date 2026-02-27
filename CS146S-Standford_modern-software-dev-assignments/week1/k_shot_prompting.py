@@ -7,7 +7,23 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = "You are a helpful assistant"
+YOUR_SYSTEM_PROMPT = """
+Task: Reverse the given word.
+
+Example 1:  
+Input: apple  
+Output: elppa  
+
+Example 2:  
+Input: banana  
+Output: ananab  
+
+Example 3:  
+Input: hello  
+Output: olleh  
+
+"""
+
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

@@ -199,3 +199,25 @@ While larger models and careful prompting can improve performance, tasks requiri
 - architectural constraints
 
 Understanding these limitations helps design better prompts, evaluations, and future architectures.
+
+
+# Self Consistency
+While CoT generates a single reasoning path, Self-Consistency generates multiple different reasoning paths and then selects the most frequent answer (the majority vote).
+
+## How it works
+Self-consistency prompting is an advanced technique that improves Large Language Model (LLM) accuracy on reasoning tasks by generating multiple, diverse reasoning paths for a single prompt and selecting the most consistent (majority) answer. It enhances Chain-of-Thought (CoT) prompting by mitigating the risk of a single, faulty, or greedy reasoning path.
+
+Instead of a single “greedy” decode (taking the most likely next word once), the model follows these steps:
+
+1. __Prompting__: The model is prompted using Chain of Thought (e.g., “Let’s think step by step”).
+2. __Sampling__: The model generates several independent responses (e.g., 5, 10, or even 40 versions) for the same prompt.
+3. __Aggregation__: The system look at the final answer in each reasoning path.
+4. __Majority Vote__: The final answer provided to the user is the one that appeared most often across all the samples.
+
+Key Aspects of Self-Consistency Prompting:
+
+    + How it Works: The model is prompted multiple times to generate several, diverse reasoning paths for the same question. The final answer is chosen by selecting the most frequent answer (majority vote) among the generated responses.
+    + Methodology: It typically uses Few-Shot CoT to generate multiple potential answers and then aggregates them to find the consistent result.
+    + Applications: Highly effective for tasks requiring arithmetic, symbolic, or commonsense reasoning.
+    + Performance: Significantly improves accuracy over standard CoT, with studies showing gains on benchmarks like GSM8K (+17.9%), SVAMP (+11.0%), and AQuA (+12.2%).
+    + Limitations: It is less suited for creative or free-form generation and may have diminishing returns after a certain number of samples.

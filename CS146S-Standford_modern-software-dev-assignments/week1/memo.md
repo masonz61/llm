@@ -221,3 +221,74 @@ Key Aspects of Self-Consistency Prompting:
     + Applications: Highly effective for tasks requiring arithmetic, symbolic, or commonsense reasoning.
     + Performance: Significantly improves accuracy over standard CoT, with studies showing gains on benchmarks like GSM8K (+17.9%), SVAMP (+11.0%), and AQuA (+12.2%).
     + Limitations: It is less suited for creative or free-form generation and may have diminishing returns after a certain number of samples.
+
+    # [https://medium.com/@keetasin01596/building-a-better-rag-tips-for-writing-effective-prompts-808cb46c4d6f]RAG
+    Retrieval-Augmented Generation (RAG) has transformed Large Language Models (LLMs) from static knowledge bases into dynamic reasoning engines capable of accessing real-time, proprietary data. However, the performance of a RAG system is only as good as the prompt that orchestrates it. 
+
+## The 7 Pillars of a Production-Ready RAG Prompt
+1. System Role (The Persona)
+
+Defining a clear persona establishes the model’s behavioral and linguistic boundaries. Assigning roles such as Senior Technical Consultant or Medical Researcher primes the LLM to adopt domain-appropriate reasoning patterns and professional tone.
+2. Context Delineation (Delimiters)
+
+Modern LLMs perform significantly better when prompt components are clearly separated. Using XML-style tags (e.g., <context>, <instructions>, <query>) creates a lightweight prompt grammar that prevents instruction–data confusion and helps mitigate prompt injection risks.
+3. Context Usage Rules (Context Locking)
+
+To prevent hallucinations, prompts must explicitly define the hierarchy of truth. Instructions such as “Answer ONLY using the provided context” act as a hard constraint, forcing the model to ground its responses strictly in retrieved documents.
+4. Few-Shot Examples (Pattern Matching)
+
+While zero-shot prompting is often sufficient for simple tasks, few-shot examples provide superior reliability in production systems. By demonstrating 2–3 ideal input–output pairs, developers can enforce consistent reasoning patterns and output structure.
+5. Source Attribution (Citations)
+
+Verifiability is a defining characteristic of professional RAG systems. Prompts should explicitly require source citations (e.g., document IDs or filenames) for every factual claim, enabling downstream auditing and user trust.
+6. Fallback Behavior (Negative Constraints)
+
+Without explicit fallback rules, models may attempt to “help” by guessing. Production-grade prompts must include strict instructions such as: “If the answer is not present in the context, state that you do not know.”
+7. Output Format (Parseability)
+
+For system integration, outputs must be predictable. Explicitly defining formats — such as JSON schemas, structured Markdown, or bullet-point lists — ensures responses can be reliably parsed or rendered by downstream applications.
+
+## The Strategic Role of Delimiters and Symbols
+Delimiters are not merely visual separators; they define the logical architecture of a prompt. Without clear boundaries, instructions, data, and user input can bleed into one another — leading to instruction contamination and higher error rates.
+
+__Why delimiters matter__
++ Semantic separation: Signals how each section should be interpreted
++ Prompt injection mitigation: Treats user input as untrusted data
++ Improved parseability: Enables reliable downstream extraction
+
+Common Delimiter Styles
+
+| Symbol Type        | Example                    | Use Case                              | Benefits                                  |
+|--------------------|----------------------------|----------------------------------------|--------------------------------------------|
+| XML-style Tags     | `<context>…</context>`     | Complex prompts, hierarchical data     | High clarity, excellent for Claude & GPT   |
+| Markdown Headers   | `### Instructions`         | Simple RAG setups                      | Good visual separation, easy for humans    |
+| Triple Quotes      | `"""Text chunk"""`         | Wrapping long text blocks              | Standard way to isolate raw data blocks    |
+| Dashes / Hashes    | `---` or `###`             | Separating sections                    | Lightweight and low token cost             |
+
+## Strategic Optimization: Combating the “Lost in the Middle” Bias
+Transformer models exhibit positional bias, prioritizing information at the beginning (primacy) and end (recency) of a prompt. Important details buried in the middle are often ignored.
+
+Effective strategies:
+
+    + Place the most relevant document at the beginning
+    + Place the second most relevant document or execution rules at the end
+    + Reinforce critical constraints near the end of the prompt
+
+## Chain of Verification (CoVe): An Advanced Safeguard
+
+Even with strong retrieval, models can produce confident but incorrect statements. The Chain of Verification (CoVe) mitigates this by transforming generation into a multi-stage process:
+
+    1. Draft a Baseline: The model generates an initial draft answer based on the retrieved context.
+    2. Plan Verifications: The model analyzes its own draft and identifies individual factual claims (e.g., dates, names, figures). It then generates a list of “verification questions” to test these claims.
+    3.  Execute Verification: The model answers each verification question independently. Critically, this stage should ideally be done without showing the model its original draft to avoid confirmation bias.
+    4. Finalize Verified Answer: The model synthesizes the final response, keeping only information that was successfully verified and removing or marking any uncertain claims.
+
+In production systems, CoVe is most effective when paired with iterative retrieval, allowing focused searches for each verification step.
+
+## Systematic Evaluation: The RAG Triad
+
+Prompt engineering is an iterative process that requires quantitative measurement. The RAG Triad serves as the gold standard for evaluation:
+
+    1. Context Relevancy: Did we retrieve the right information?
+    2. Faithfulness: Is the answer grounded in the retrieved data?
+    3. Answer Relevancy: Does the output directly address the user’s query?

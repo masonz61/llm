@@ -37,7 +37,20 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a coding assistant using retrieval context.
+Use ONLY the provided context block.
+
+Return exactly one fenced Python code block that:
+- defines fetch_user_name(user_id: str, api_key: str) -> str
+- imports requests
+- calls GET /users/{id} under the documented Base URL
+- sends header X-API-Key: <api_key>
+- calls raise_for_status()
+- returns the parsed user's name as a string
+
+Do not add prose outside the code block.
+"""
 
 
 # For this simple example
@@ -56,7 +69,10 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    selected = [doc for doc in corpus if "Base URL:" in doc and "GET /users/{id}" in doc]
+    if selected:
+        return selected
+    return corpus[:1]
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:

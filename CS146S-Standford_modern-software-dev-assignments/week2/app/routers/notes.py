@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
+from typing import List
 
 from fastapi import APIRouter, HTTPException
 
@@ -28,6 +29,19 @@ def create_note(payload: CreateNoteRequest) -> NoteResponse:
         raise HTTPException(status_code=500, detail="failed to load created note")
 
     return NoteResponse(id=note["id"], content=note["content"], created_at=note["created_at"])
+
+
+@router.get("")
+def list_all_notes() -> List[NoteResponse]:
+    try:
+        rows = db.list_notes()
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail="database error") from e
+
+    return [
+        NoteResponse(id=r["id"], content=r["content"], created_at=r["created_at"])
+        for r in rows
+    ]
 
 
 @router.get("/{note_id}")

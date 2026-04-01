@@ -76,25 +76,25 @@ Refactor week2 backend for clarity:
 
 Generated/Modified Code Snippets:
 week2/app/main.py: lifespan + startup init
-Lines 3-22 (added lifespan, removed import-time init_db()), rest unchanged.
+- Lines 3-22 (added lifespan, removed import-time init_db()), rest unchanged.
 week2/app/db.py: DB lifecycle + connection setup
-Lines 17-23 (enable PRAGMA foreign_keys = ON in get_connection())
-Lines 26-51 (DB schema init with foreign keys)
+- Lines 17-23 (enable PRAGMA foreign_keys = ON in get_connection())
+- Lines 26-51 (DB schema init with foreign keys)
 (Also removed ensure_data_directory_exists() call inside init_db().)
 week2/app/routers/action_items.py: schema usage + route error handling
-Lines 1-77 (new typed request/response models, try/except for service/DB errors)
+- Lines 1-77 (new typed request/response models, try/except for service/DB errors)
 week2/app/routers/notes.py: schema usage + route error handling
-Lines 1-44 (new typed request/response models, try/except for DB errors)
+- Lines 1-44 (new typed request/response models, try/except for DB errors)
 week2/app/schemas/__init__.py
-Lines 1-2
+- Lines 1-2
 week2/app/schemas/action_items.py
-Lines 8-50 (all request/response schemas for action-items)
+- Lines 8-50 (all request/response schemas for action-items)
 week2/app/schemas/notes.py
-Lines 8-20 (request/response schemas for notes)
+- Lines 8-20 (request/response schemas for notes)
 week2/app/services/extract.py (LLM implementation previously added)
-Lines 93-298 (service-layer ActionItemExtractionError + Ollama model selection + JSON validation + extract_action_items_llm)
+- Lines 93-298 (service-layer ActionItemExtractionError + Ollama model selection + JSON validation + extract_action_items_llm)
 week2/tests/test_extract.py (LLM unit tests previously added)
-Lines 1-78 (tests using monkeypatch to mock Ollama)
+- Lines 1-78 (tests using monkeypatch to mock Ollama)
 
 
 ### Exercise 4: Use Agentic Mode to Automate a Small Task
@@ -106,21 +106,38 @@ Add:
 Keep UI feedback clear for success and error cases.
 
 Generated Code Snippets:
-```
-TODO: List all modified code files with the relevant line numbers.
-```
+1. action_items.py
+Line 17: Added import of extract_action_items_llm function
+Lines 47-67: Added new POST /action-items/extract-llm endpoint that uses the LLM-based extraction service with identical error handling and response format
+2. notes.py
+Line 4: Added List type import
+Lines 33-42: Added new GET /notes endpoint that returns a list of all notes sorted by creation date (most recent first)
+3. index.html
+Lines 8-22: Enhanced CSS with new styling for messages, note items, and labels
+Line 41: Added "Extract LLM" button next to existing "Extract" button
+Lines 44-46: Added "List Notes" section with button and message area
+Lines 50-57: Added JavaScript helper function showMessage() for unified success/error feedback
+Lines 59-101: Enhanced original Extract button handler with proper error messages and success feedback
+Lines 103-151: Added new Extract LLM button handler with LLM-specific status messages
+Lines 153-185: Added List Notes button handler that fetches and displays all notes with content and creation date
 
 
 ### Exercise 5: Generate a README from the Codebase
 Prompt: 
-```
-TODO
-```
+Generate `week2/README.md` from the current codebase.
+Include:
+- project overview
+- setup and run instructions
+- API endpoints and behavior
+- test instructions
+- Ollama dependency notes for the LLM endpoint
+List modified files and the relevant line numbers.
 
 Generated Code Snippets:
-```
-TODO: List all modified code files with the relevant line numbers.
-```
+week2/README.md:1
+week2/README.md:13
+week2/README.md:43
+week2/README.md:107
 
 
 ## SUBMISSION INSTRUCTIONS
